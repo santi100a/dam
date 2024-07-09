@@ -36,6 +36,7 @@ async function main() {
         response.status(200).contentType('text/html').send(`<html>
         <head>
           <meta charset="utf-8" />
+          <meta name="viewport" content="width=device-width, initial-scale=1" />
             <title>The Santinian Dictionary of Modern Language</title>
             <style>body{font-family:system-ui;}@media(prefers-color-scheme:dark){body{background-color:black;color:white;}}</style>
   
@@ -59,9 +60,11 @@ async function main() {
       else {
         const query = String(word).trim().toLowerCase();
         const wordObject = await collection.findOne({ word: query });
-        response.status(wordObject ? 200 : 404).contentType('text/html').send(`<html>
+        response.status(wordObject ? 200 : 404).contentType('text/html')
+          .send(`<html>
   <head>
     <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
       <title>The Santinian Dictionary of Modern Language</title>
       <style>body{font-family:system-ui;}@media(prefers-color-scheme:dark){body{background-color:black;color:white;}}</style>
 
@@ -70,16 +73,34 @@ async function main() {
   <body>
     <h1>The Santinian Dictionary of Modern Language</h1>
 
-    ${wordObject ? `<ol>
-      ${wordObject.definitions.map(definition => `<li><strong>${word} (${definition.shortenedWordType})</strong> /${definition.ipa}/ <br /> ${wordObject.from ? `<div class="wrapper" style="width:40pc;"><p style="color:green;">${wordObject.from}</p></div>` : ''}<p>${definition.text}</p> ${definition.example ? `<p><strong>Example:</strong> ${definition.example}</p>` : ''}</li>`).join('\n')}
+    ${
+      wordObject
+        ? `<ol>
+      ${wordObject.definitions
+        .map(
+          (definition) =>
+            `<li><strong>${word} (${definition.shortenedWordType})</strong> /${
+              definition.ipa
+            }/ <br /> ${
+              wordObject.from
+                ? `<div class="wrapper" style="width:40pc;"><p style="color:green;">${wordObject.from}</p></div>`
+                : ''
+            }<p>${definition.text}</p> ${
+              definition.example
+                ? `<p><strong>Example:</strong> ${definition.example}</p>`
+                : ''
+            }</li>`
+        )
+        .join('\n')}
   
-    </ol>` : `<p style="color: orange;">No definitions found for "${word}"</p>`}
+    </ol>`
+        : `<p style="color: orange;">No definitions found for "${word}"</p>`
+    }
   </body>
 </html>`);
       }
     });
 
-    
     server.listen(port, () => {
       console.log('SDML listening on: http://127.0.0.1:%d', port);
       // console.log('* DICT: dict://127.0.0.1:%d', port);
