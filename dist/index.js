@@ -40,10 +40,14 @@ exports.__esModule = true;
 var mongodb_1 = require("mongodb");
 var favicon_1 = require("./favicon");
 var express = require("express");
-var uriString = process.env.PROD_DB_URI; // Replace with your MongoDB connection URI
-var port = (_a = process.env.PORT) !== null && _a !== void 0 ? _a : 2628;
+var compression = require("compression");
+var uriString = process.env.PROD_DB_URI;
+var port = (_a = process.env.PORT) !== null && _a !== void 0 ? _a : 3000;
 var client = new mongodb_1.MongoClient(uriString);
+var title = 'Diccionario de Argot Moderno';
+var contactEmail = 'santyrojasprieto9+sdml@gmail.com';
 var server = express();
+server.use(compression());
 function main() {
     return __awaiter(this, void 0, void 0, function () {
         var database, collection_1;
@@ -57,41 +61,43 @@ function main() {
                     _a.sent();
                     console.log('Connected to MongoDB');
                     database = client.db('sdml');
-                    collection_1 = database.collection('en');
+                    collection_1 = database.collection('es');
                     server.get('/', function (request, response) { return __awaiter(_this, void 0, void 0, function () {
-                        var word, query, wordObject_1;
+                        var word, wordObject;
                         return __generator(this, function (_a) {
                             switch (_a.label) {
                                 case 0:
-                                    word = request.query.word;
-                                    if (!(typeof word !== 'string')) return [3 /*break*/, 1];
-                                    response.status(200).contentType('text/html').send("<html>\n        <head>\n          <meta charset=\"utf-8\" />\n          <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />\n            <title>The Santinian Dictionary of Modern Language</title>\n            <style>body{font-family:system-ui;}@media(prefers-color-scheme:dark){body{background-color:black;color:white;}}</style>\n  \n            <link rel=\"icon\" type=\"image/x-icon\" href=\"".concat(favicon_1.FAVICON_DATASOURCE, "\" />\n        </head>\n        <body>\n          <h1>The Santinian Dictionary of Modern Language</h1>\n            <p>Get accurate definitions of common Generation Alpha slang in seconds!</p>\n            <form action=\"/\" method=\"get\">\n                <input type=\"text\"\n                name=\"word\" \n                placeholder=\"Type a slang word...\" \n                style=\"padding:1.6pc 3.2pc;border-radius:50px\"\n                />\n                <br />\n                <br />\n                <input type=\"submit\" value=\"Submit\" style=\"padding:1.6pc 3.2pc;border-radius:100px;color:white;background-color:#0056ff;\" />\n            </form>\n        </body>\n      </html>"));
+                                    word = String(request.query.word).trim().toLowerCase();
+                                    if (!(request.query.word == undefined || word === '')) return [3 /*break*/, 1];
+                                    response
+                                        .status(200)
+                                        .contentType('text/html')
+                                        .send("<!DOCTYPE html>\n      <html lang=\"es\">\n        <head>\n          <meta charset=\"utf-8\" />\n          <meta name=\"description\" content=\"Un diccionario de jerga adolescente en l\u00EDnea, r\u00E1pido y minimalista.\" />\n          <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />\n            <title>".concat(title, "</title>\n            <style>body{font-family:system-ui;}@media(prefers-color-scheme:dark){body{background-color:black;color:white;}}</style>\n  \n            <link rel=\"icon\" type=\"image/x-icon\" href=\"").concat(favicon_1.FAVICON_DATASOURCE, "\" />\n        </head>\n        <body>\n          <h1>").concat(title, "</h1>\n            <p>Consulta definiciones de palabras de generaci\u00F3n Z o alfa</p>\n            <form action=\"/\" method=\"get\">\n                <input type=\"text\"\n                required\n                name=\"word\" \n                placeholder=\"Escribe una palabra...\" \n                style=\"padding: 1pc 1pc;border-radius:50px;font-family:inherit;\"\n                />\n                <input type=\"submit\"\n                value=\"Consultar\" \n                style=\"padding: 1.1pc 3pc;border-radius:100px;color:white;background-color:#0056ff;font-family:inherit;\" \n                />\n            </form>\n        </body>\n      </html>"));
                                     return [3 /*break*/, 3];
-                                case 1:
-                                    query = String(word).trim().toLowerCase();
-                                    return [4 /*yield*/, collection_1.findOne({ word: query })];
+                                case 1: return [4 /*yield*/, collection_1.findOne({ word: word })];
                                 case 2:
-                                    wordObject_1 = _a.sent();
-                                    response.status(wordObject_1 ? 200 : 404).contentType('text/html')
-                                        .send("<html>\n  <head>\n    <meta charset=\"utf-8\" />\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />\n      <title>The Santinian Dictionary of Modern Language</title>\n      <style>body{font-family:system-ui;}@media(prefers-color-scheme:dark){body{background-color:black;color:white;}}</style>\n\n      <link rel=\"icon\" type=\"image/x-icon\" href=\"".concat(favicon_1.FAVICON_DATASOURCE, "\" />\n  </head>\n  <body>\n    <h1>The Santinian Dictionary of Modern Language</h1>\n\n    ").concat(wordObject_1
-                                        ? "<ol>\n      ".concat(wordObject_1.definitions
-                                            .map(function (definition) {
-                                            return "<li><strong>".concat(word, " (").concat(definition.shortenedWordType, ")</strong> /").concat(definition.ipa, "/ <br /> ").concat(wordObject_1.from
-                                                ? "<div class=\"wrapper\" style=\"width:40pc;\"><p style=\"color:green;\">".concat(wordObject_1.from, "</p></div>")
-                                                : '', "<p>").concat(definition.text, "</p> ").concat(definition.example
-                                                ? "<p><strong>Example:</strong> ".concat(definition.example, "</p>")
+                                    wordObject = _a.sent();
+                                    response
+                                        .status(wordObject ? 200 : 404)
+                                        .contentType('text/html')
+                                        .send("<!DOCTYPE html>\n  <html lang=\"es\">\n  <head>\n    <meta charset=\"utf-8\" />\n    <meta name=\"description\" content=\"Un diccionario de jerga adolescente en l\u00EDnea, r\u00E1pido y minimalista.\" />\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />\n      <title>".concat(title, "</title>\n      <style>body{font-family:system-ui;}a{color:#587edb;}.from{color:#006100;background-color:#f7f7f7;}@media(prefers-color-scheme:dark){body{background-color:black;color:white;}.from{color:#00db00;background-color:#2e2e2e;}}</style>\n\n      <link rel=\"icon\" type=\"image/x-icon\" href=\"").concat(favicon_1.FAVICON_DATASOURCE, "\" />\n  </head>\n  <body>\n    <h1>").concat(title, "</h1>\n\n    ").concat(wordObject
+                                        ? "\n        <strong>".concat(word, " </strong> /").concat(wordObject.ipa, "/ <br /> ").concat(wordObject.from
+                                            ? "<span class=\"from\">".concat(wordObject.from, "</span>")
+                                            : '', "\n        <ol>\n      ").concat(wordObject.definitions
+                                            .map(function (definition, index) {
+                                            return "<li id=\"".concat(index + 1, "\"> <p><span style=\"color:#587edb;\">").concat(definition.shortenedWordType, "</span> ").concat(definition.text, "</p> ").concat(definition.example
+                                                ? "<p><strong>Ejemplo:</strong> ".concat(definition.example, "</p>")
                                                 : '', "</li>");
                                         })
-                                            .join('\n'), "\n  \n    </ol>")
-                                        : "<p style=\"color: orange;\">No definitions found for \"".concat(word, "\"</p>"), "\n  </body>\n</html>"));
+                                            .join('\n'), "\n  \n    </ol>\n    <hr /> <p>\u00A1Env\u00EDa sugerencias a <a href=\"mailto:").concat(contactEmail, "\">").concat(contactEmail, "</a>!</p>")
+                                        : "<p style=\"color: orange;\">La palabra \"".concat(word, "\" no est\u00E1 en el diccionario.</p>\n          \u00A1Env\u00EDa sugerencias a <a href=\"mailto:").concat(contactEmail, "\">").concat(contactEmail, "</a>!"), "\n  </body>\n</html>"));
                                     _a.label = 3;
                                 case 3: return [2 /*return*/];
                             }
                         });
                     }); });
                     server.listen(port, function () {
-                        console.log('SDML listening on: http://127.0.0.1:%d', port);
-                        // console.log('* DICT: dict://127.0.0.1:%d', port);
+                        console.log('Listening on: http://127.0.0.1:%d', port);
                     });
                     return [3 /*break*/, 3];
                 case 2: return [7 /*endfinally*/];
