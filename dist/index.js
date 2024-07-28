@@ -45,7 +45,7 @@ var uriString = process.env.PROD_DB_URI;
 var port = (_a = process.env.PORT) !== null && _a !== void 0 ? _a : 3000;
 var client = new mongodb_1.MongoClient(uriString);
 var title = 'Diccionario de Argot Moderno';
-var contactEmail = 'santyrojasprieto9+sdml@gmail.com';
+var contactEmail = 'santyrojasprieto9+dam@gmail.com';
 var server = express();
 server.use(compression());
 function main() {

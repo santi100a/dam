@@ -7,7 +7,7 @@ const uriString = process.env.PROD_DB_URI!;
 const port = process.env.PORT ?? 3000;
 const client = new MongoClient(uriString);
 const title = 'Diccionario de Argot Moderno';
-const contactEmail = 'santyrojasprieto9+sdml@gmail.com';
+const contactEmail = 'santyrojasprieto9+dam@gmail.com';
 
 interface Word {
   word: string;
